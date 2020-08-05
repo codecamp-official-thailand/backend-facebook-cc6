@@ -22,6 +22,48 @@ const create = async (req, res) => {
     res.status(201).send(newPost);
 };
 
+const getAllPosts = (req, res) => {
+
+};
+
+const deletePostById = async (req, res) => {
+    const id = Number(req.params.id);
+    const targetPost = await db.Post.findOne({ where: { id } });
+
+    if (!targetPost) {
+        res.status(404).send({ message: `Not Found Post ID: ${id}` });
+    } else {
+        if (targetPost.user_id === req.user.id) {
+            await targetPost.destroy();
+            res.status(204).send();
+        } else {
+            res.status(401).send();
+        }
+    }
+};
+
+const editPostById = (req, res) => {
+    const id = Number(req.params.id);
+    const { caption } = req.body;
+    const targetPost = await db.Post.findOne({ where: { id } });
+
+    if (!targetPost) {
+        res.status(404).send({ message: `Not Found Post ID: ${id}` });
+    } else {
+        if (targetPost.user_id === req.user.id) {
+            await targetPost.update({
+                caption
+            });
+            res.status(204).send();
+        } else {
+            res.status(401).send();
+        }
+    }
+};
+
 module.exports = {
     create,
+    getAllPosts,
+    deletePostById,
+    editPostById,
 };;

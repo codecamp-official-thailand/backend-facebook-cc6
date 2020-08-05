@@ -6,5 +6,8 @@ const passport = require("passport");
 const auth = passport.authenticate("jwt", { session: false });
 
 router.post("/", auth, controllers.create);
+router.get("/", auth, controllers.getAllPosts);
+router.delete("/:id", auth, controllers.deletePostById);
+router.patch("/:id", auth, controllers.editPostById)
 
 module.exports = router;
